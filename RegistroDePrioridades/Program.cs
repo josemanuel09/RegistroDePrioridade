@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using RegistroDePrioridades.Components;
+using RegistroDePrioridades.DAL;
+using RegistroDePrioridades.Services;
 
 namespace RegistroDePrioridades
 {
@@ -12,7 +15,16 @@ namespace RegistroDePrioridades
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            //Obtenemos el ConStr para usarlo en el contexto
+            var ConStr = builder.Configuration.GetConnectionString("ConStr");
+
+            //Agregamos el contexto al builder con el ConStr
+            builder.Services.AddDbContext<Contexto>(Options => Options.UseSqlite(ConStr));
+
+            builder.Services.AddScoped<PrioridadServices>();
+            
             var app = builder.Build();
+            
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
